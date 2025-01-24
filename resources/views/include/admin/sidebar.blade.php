@@ -10,8 +10,9 @@
                 <li class="list-divider"></li>
                 <li class="nav-small-cap"><span class="hide-menu">Data</span></li>
 
-                <li class="sidebar-item"> <a class="sidebar-link" href="ticket-list.html" aria-expanded="false"><i
-                            data-feather="tag" class="feather-icon"></i><span class="hide-menu">Jabatan
+                <li class="sidebar-item"> <a class="sidebar-link" href="{{ route('jabatan.index') }}"
+                        aria-expanded="false"><i data-feather="tag" class="feather-icon"></i><span
+                            class="hide-menu">Jabatan
                         </span></a>
                 </li>
                 <li class="sidebar-item"> <a class="sidebar-link sidebar-link" href="app-chat.html"

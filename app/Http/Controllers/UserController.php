@@ -17,15 +17,15 @@ class UserController extends Controller
         return view('home');
     }
 
-//     public function index()
-// {
-//     // Ambil data pengguna yang bukan admin
-//     $user = User::whereDoesntHave('roles', function ($query) {
-//         $query->where('name', 'admin');
-//     })->get();
+    public function index()
+{
+    // Ambil data pengguna yang bukan admin
+    $user = User::whereDoesntHave('roles', function ($query) {
+        $query->where('name', 'admin');
+    })->get();
 
-//     return view('admin.user.index', compact('user'));
-// }
+    return view('admin.user.index', compact('user'));
+}
 
     public function create()
     {

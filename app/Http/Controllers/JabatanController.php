@@ -22,7 +22,7 @@ class JabatanController extends Controller
     public function create()
     {
         $jabatan = jabatan::all();
-        return view('admin.jabatan.create', compact('jabatan'));
+        return view('admin.jabatan.index', compact('jabatan'));
     }
 
     /**

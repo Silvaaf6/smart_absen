@@ -21,35 +21,40 @@
                         <table class="table no-wrap v-middle mb-0">
                             <thead>
                                 <tr class="border-0">
-                                    <th class="border-0 font-14 font-weight-medium text-muted">No
-                                    </th>
-                                    <th class="border-0 font-14 font-weight-medium text-muted">Nama Jabatan
-                                    </th>
-                                    <th class="border-0 font-14 font-weight-medium text-muted">Aksi</th>
+                                    <th class="border-bottom font-14 font-weight-medium text-muted">No</th>
+                                    <th class="border-bottom font-14 font-weight-medium text-muted">Nama Jabatan</th>
+                                    <th class="border-bottom font-14 font-weight-medium text-muted">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @php $no = 1 @endphp
-                                @foreach ($jabatan as $data)
+                                @if ($jabatan->isEmpty())
                                     <tr>
-                                        <td class="border-top-0 text-muted font-14">{{ $no++ }}</td>
-                                        <td class="border-top-0 text-muted font-14">{{ $data->nama_jabatan }}</td>
-                                        <td class="border-top-0 text-muted font-14">
-                                            <form method="POST" action="{{ route('jabatan.destroy', $data->id) }}"
-                                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <div class="flex items-center space-x-4 text-sm">
-                                                    <button type="submit"
-                                                        class="flex items-center justify-between p-2 text-sm font-medium text-red-600 rounded-lg border-0 bg-transparent"
-                                                        aria-label="Delete">
-                                                        <i class='fas fa-trash-alt'></i>
-                                                    </button>
-                                                </div>
-                                            </form>
+                                        <td colspan="3" class="text-center text-muted font-14">Tidak ada data tersedia
                                         </td>
                                     </tr>
-                                @endforeach
+                                @else
+                                    @php $no = 1 @endphp
+                                    @foreach ($jabatan as $data)
+                                        <tr>
+                                            <td class="border-bottom text-muted font-14">{{ $no++ }}</td>
+                                            <td class="border-bottom text-muted font-14">{{ $data->nama_jabatan }}</td>
+                                            <td class="border-bottom text-muted font-14">
+                                                <form method="POST" action="{{ route('jabatan.destroy', $data->id) }}"
+                                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <div class="flex items-center space-x-4 text-sm">
+                                                        <button type="submit"
+                                                            class="flex items-center justify-between p-2 text-sm font-medium text-red-600 rounded-lg border-0 bg-transparent"
+                                                            aria-label="Delete">
+                                                            <i class='fas fa-trash-alt text-danger'></i>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -63,7 +68,7 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                             </div>
                             <div class="modal-body">
-                                <form method="POST" action="#" class="mt-2">
+                                <form method="POST" action="{{route('jabatan.store')}}" enctype="multipart/form-data" class="mt-2">
                                     @csrf
                                     <div class="row">
                                         <div class="col-lg-12">

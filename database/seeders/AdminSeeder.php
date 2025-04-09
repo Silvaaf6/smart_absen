@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
@@ -16,16 +15,30 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = Role::create(['name' => 'user']);
-        $admin = Role::create(['name' => 'admin']);
+        $create_user = Permission::firstOrCreate(['name' => 'create_user']);
+        $edit_user = Permission::firstOrCreate(['name' => 'edit_user']);
+        $read_user = Permission::firstOrCreate(['name' => 'read_user']);
+        $delete_user = Permission::firstOrCreate(['name' => 'delete_user']);
 
-        $user = User::create([
-            'name' => 'admin',
-            'email' => 'admin@gmail.com',
-            'password' => Hash::make('12345678'),
-        ]);
+        $create_kehadiran = Permission::firstOrCreate(['name' => 'create_kehadiran']);
+        $read_kehadiran = Permission::firstOrCreate(['name' => 'read_kehadiran']);
 
-        $user->assignRole('admin');
+        $admin = Role::firstOrCreate(['name' => 'admin']);
+        $admin->syncPermissions([$create_user, $read_user, $edit_user, $delete_user, $read_kehadiran]);
 
+        $user = Role::firstOrCreate(['name' => 'user']);
+        $user->syncPermissions([$create_kehadiran, $read_kehadiran, $read_user]);
+
+        $adminUser = User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'admin',
+                'password' => Hash::make('12345678'),
+            ]
+        );
+
+        if (!$adminUser->hasRole('admin')) {
+            $adminUser->assignRole('admin');
+        }
     }
 }

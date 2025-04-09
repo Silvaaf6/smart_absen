@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('kehadirans', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_user');
+            $table->unsignedBigInteger('id_user')->nullable();
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->date('tanggal');
-            $table->time('waktu_masuk');
-            $table->time('waktu_keluar');
-            $table->enum('status', ['hadir', 'izin', 'sakit', 'tanpa keterangan', 'terlambat'])->default('tanpa keterangan');
+            $table->time('jam_masuk')->nullable();
+            $table->time('jam_keluar')->nullable();
+            $table->string('jam_kerja')->nullable();
+            $table->string('surat_dokter')->nullable();
+            $table->enum('status', ['Hadir', 'Terlambat', 'Sakit'])->nullable()->default('Hadir');
             $table->timestamps();
         });
     }

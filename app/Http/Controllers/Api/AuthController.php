@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -63,4 +64,11 @@ class AuthController extends Controller
             'message' => 'logout success',
         ]);
     }
+
+    public function profile(Request $request)
+    {
+        return response()->json($request->user());
+    }
+
+    
 }

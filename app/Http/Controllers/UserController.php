@@ -1,23 +1,55 @@
 <?php
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Alert;
 use App\Models\Jabatan;
+use App\Models\Kehadiran;
+use App\Models\Pengajuan_cuti;
 use App\Models\User;
+use Carbon\carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    public function home()
-    {
-        $user = Auth::user();
-        return view('home');
-    }
+    public function home(Request $request)
+{
+    $jumlahPegawai = User::whereHas('roles', function ($query) {
+        $query->where('name', 'user');
+    })->count();
+
+    $jumlahJabatan = Jabatan::count();
+
+    $tanggal = $request->input('tanggal') ?: Carbon::now('Asia/Jakarta')->format('Y-m-d');
+
+    $jumlahHadir = Kehadiran::whereDate('tanggal', $tanggal)
+        ->whereIn('status', ['Hadir', 'Terlambat'])
+        ->distinct('id_user')
+        ->count('id_user');
+
+    $jumlahCuti = Pengajuan_cuti::whereDate('tgl_pengajuan', $tanggal)
+        ->whereIn('status', ['menunggu konfirmasi'])
+        ->distinct('id_user')
+        ->count('id_user');
+
+    // Cek apakah user sudah absen hari ini
+    $userId = Auth::id();
+    $absenHariIni = Kehadiran::where('id_user', $userId)
+        ->whereDate('tanggal', $tanggal)
+        ->exists();
+
+    return view('home', compact(
+        'jumlahPegawai',
+        'jumlahJabatan',
+        'jumlahHadir',
+        'jumlahCuti',
+        'absenHariIni'
+    ));
+}
+
 
     public function index()
     {
-        // Ambil data pengguna yang bukan admin beserta jabatan
         $user = User::whereDoesntHave('roles', function ($query) {
             $query->where('name', 'admin');
         })->with('jabatan')->get();
@@ -49,33 +81,33 @@ class UserController extends Controller
     {
         // dd($request->all());
 
-        // $request->validate([
-        //     'name'          => 'required',
-        //     'email'         => 'required|email',
-        //     'password'      => 'required|min:8',
-        //     'nip'           => 'required|min:16',
-        //     'id_jabatan'    => 'required',
-        //     'tempat_lahir'  => 'required',
-        //     'tgl_lahir'     => 'required|date|before_or_equal:' . now()->subYears(17)->format('Y-m-d'),
-        //     'alamat'        => 'required',
-        //     'jenis_kelamin' => 'required',
-        //     'agama'         => 'required',
-        //     'no_telp'       => 'required',
-        //     'cover'         => 'required|image|mimes:jpg,jpeg,png|max:65535',
-        // ], [
-        //     'name.required'          => 'Nama wajib diisi.',
-        //     'email.required'         => 'Email wajib diisi',
-        //     'password.required'      => 'Password wajib diisi',
-        //     'nip.required'           => 'NIP wajib diisi',
-        //     'id_jabatan.required'    => 'Jabatan wajib dipilih',
-        //     'tempat_lahir.required'  => 'Tempat lahir wajib diisi',
-        //     'tgl_lahir.required'     => 'Tanggal lahir wajib diisi',
-        //     'alamat.required'        => 'Alamat wajib diisi',
-        //     'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih',
-        //     'agama.required'         => 'Agama wajib dipilih',
-        //     'no_telp.required'       => 'No telepon wajib diisi',
-        //     'cover.required'         => 'Foto profile wajib diisi',
-        // ]);
+        $request->validate([
+            'name'          => 'required',
+            'email'         => 'required|email',
+            'password'      => 'required|min:8',
+            'nip'           => 'required|min:16',
+            'id_jabatan'    => 'required',
+            'tempat_lahir'  => 'required',
+            'tgl_lahir'     => 'required|date|before_or_equal:' . now()->subYears(17)->format('Y-m-d'),
+            'alamat'        => 'required',
+            'jenis_kelamin' => 'required',
+            'agama'         => 'required',
+            'no_telp'       => 'required',
+            'cover'         => 'required|image|mimes:jpg,jpeg,png|max:65535',
+        ], [
+            'name.required'          => 'Nama wajib diisi.',
+            'email.required'         => 'Email wajib diisi',
+            'password.required'      => 'Password wajib diisi',
+            'nip.required'           => 'NIP wajib diisi',
+            'id_jabatan.required'    => 'Jabatan wajib dipilih',
+            'tempat_lahir.required'  => 'Tempat lahir wajib diisi',
+            'tgl_lahir.required'     => 'Tanggal lahir wajib diisi',
+            'alamat.required'        => 'Alamat wajib diisi',
+            'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih',
+            'agama.required'         => 'Agama wajib dipilih',
+            'no_telp.required'       => 'No telepon wajib diisi',
+            'cover.required'         => 'Foto profile wajib diisi',
+        ]);
 
         $user                = new User();
         $user->name          = $request->name;

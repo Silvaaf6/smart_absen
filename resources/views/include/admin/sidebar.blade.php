@@ -18,10 +18,9 @@
                             <span class="hide-menu">Jabatan</span>
                         </a>
                     </li>
-                    <li class="sidebar-item">
+                    <li class="sidebar-item {{ request()->routeIs('pegawai.*') ? 'selected' : '' }}">
                         <a class="sidebar-link" href="{{ route('pegawai.index') }}" aria-expanded="false">
-                            <i class="icon-people" style="font-size: 20px; "></i>
-                            {{-- <i data-feather="message-square" class="feather-icon" style="display: none;"></i> --}}
+                            <i class="icon-people" style="font-size: 20px;"></i>
                             <span class="hide-menu">Pegawai</span>
                         </a>
                     </li>
@@ -33,6 +32,10 @@
                         <span class="hide-menu">Absensi</span>
                     </a>
                 </li>
+
+                <li class="list-divider"></li>
+
+                <li class="nav-small-cap"><span class="hide-menu"></span>Cuti</li>
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="{{ route('pengajuan_cuti.index') }}" aria-expanded="false">
                         <i class="icon-notebook" style="font-size: 20px; "></i>
@@ -52,17 +55,25 @@
                     </a>
                 </li> --}}
 
-                <li class="list-divider"></li>
 
                 <li class="nav-small-cap"><span class="hide-menu"></span>Laporan</li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('laporan.index')}}" aria-expanded="false">
+                    <a class="sidebar-link" href="{{ route('laporan.index') }}" aria-expanded="false">
                         <i class="icon-folder-alt" style="font-size: 20px; "></i>
                         <i data-feather="message-square" class="feather-icon" style="display: none;"></i>
                         <span class="hide-menu">Laporan</span>
                     </a>
                 </li>
+                <li class="list-divider"></li>
 
+                {{-- <li class="nav-small-cap"><span class="hide-menu"></span>Profil</li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="{{ route('pegawai.show', $data->id)}}" aria-expanded="false">
+                        <i class="icon-folder-alt" style="font-size: 20px; "></i>
+                        <i data-feather="message-square" class="feather-icon" style="display: none;"></i>
+                        <span class="hide-menu">Profil Saya</span>
+                    </a>
+                </li> --}}
             </ul>
         </nav>
         <!-- End Sidebar navigation -->

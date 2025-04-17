@@ -110,12 +110,12 @@
                                     class="svg-icon mr-2 ml-1"></i>
                                 Profile</a>
 
-                                {{-- <a class="dropdown-item" href="javascript:void(0)"><i data-feather="mail"
+                            {{-- <a class="dropdown-item" href="javascript:void(0)"><i data-feather="mail"
                                     class="svg-icon mr-2 ml-1"></i>
                                     Inbox</a> --}}
 
-                                    <div class="dropdown-divider"></div>
-                                    @endif
+                            <div class="dropdown-divider"></div>
+                        @endif
                         <form id="logout-form" action="{{ route('logout') }}" method="POST">
                             @csrf
                             <a class="dropdown-item" href="javascript:void(0)"

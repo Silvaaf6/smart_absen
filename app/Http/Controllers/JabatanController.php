@@ -2,7 +2,7 @@
 namespace App\Http\Controllers;
 
 use Alert;
-use App\Models\jabatan;
+use App\Models\Jabatan;
 use Illuminate\Http\Request;
 
 class JabatanController extends Controller
@@ -12,7 +12,7 @@ class JabatanController extends Controller
      */
     public function index()
     {
-        $jabatan = jabatan::orderBy('created_at', 'desc')->get(); // Mengambil data terbaru di atas
+        $jabatan = Jabatan::orderBy('created_at', 'desc')->get();
         return view('admin.jabatan.index', compact('jabatan'));
     }
 
@@ -21,7 +21,7 @@ class JabatanController extends Controller
      */
     public function create()
     {
-        $jabatan = jabatan::all();
+        $jabatan = Jabatan::all();
         return view('admin.jabatan.index', compact('jabatan'));
     }
 
@@ -37,7 +37,7 @@ class JabatanController extends Controller
             'nama_jabatan.unique'   => 'Nama jabatan sudah ada.',
         ]);
 
-        $jabatan               = new jabatan();
+        $jabatan               = new Jabatan();
         $jabatan->nama_jabatan = $request->nama_jabatan;
 
         $jabatan->save();
@@ -76,7 +76,7 @@ class JabatanController extends Controller
      */
     public function destroy($id)
     {
-        $jabatan = jabatan::findOrFail($id);
+        $jabatan = Jabatan::findOrFail($id);
         $jabatan->delete();
 
         Alert::success('Sukses', 'Data Berhasil Dihapus!')->autoClose(1000);

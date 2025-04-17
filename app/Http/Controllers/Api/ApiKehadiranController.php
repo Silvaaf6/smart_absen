@@ -5,17 +5,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Kehadiran;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ApiKehadiranController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
-        $kehadirans = $user->hasRole('admin')
-        ? Kehadiran::with('user')->get()
-        : Kehadiran::where('id_user', $user->id)->with('user')->get();
+        if ($user->hasRole('admin')) {
+            $kehadirans = Kehadiran::with('user')->get();
+        } else {
+            $kehadirans = Kehadiran::where('id_user', $user->id)->with('user')->get();
+        }
 
         return response()->json([
             'status' => 'success',
@@ -27,109 +28,99 @@ class ApiKehadiranController extends Controller
     {
         $request->validate([
             'status'       => 'required|in:checkin,checkout,sakit',
-            'surat_dokter' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'surat_dokter' => 'nullable|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
-        $user           = Auth::user();
         $currentTime    = Carbon::now('Asia/Jakarta');
-        $tanggalHariIni = $currentTime->format('Y-m-d');
+        $jamMasukBatas  = Carbon::createFromTime(7, 0, 0, 'Asia/Jakarta');
+        $jamPulangBatas = Carbon::createFromTime(17, 0, 0, 'Asia/Jakarta');
 
+        $user      = auth()->user();
         $kehadiran = Kehadiran::where('id_user', $user->id)
-            ->whereDate('tanggal', $tanggalHariIni)
+            ->whereDate('tanggal', $currentTime->format('Y-m-d'))
             ->first();
 
-        // STATUS: Sakit
         if ($request->status === 'sakit') {
             if ($kehadiran) {
                 return response()->json([
                     'status'  => 'error',
-                    'message' => 'Kamu sudah absen hari ini, tidak bisa memilih absen sakit.',
-                ], 409);
+                    'message' => 'Sudah absen hari ini, tidak bisa memilih absen sakit.',
+                ], 400);
             }
 
             $filename = null;
             if ($request->hasFile('surat_dokter')) {
-                $file = $request->file('surat_dokter');
-                if (! $file->isValid()) {
-                    return response()->json([
-                        'status'  => 'error',
-                        'message' => 'Upload surat dokter gagal.',
-                    ], 500);
-                }
-
+                $file     = $request->file('surat_dokter');
                 $filename = 'surat_dokter_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/surat_dokter', $filename);
+                $file->move(public_path('uploads/surat_dokter'), $filename);
             }
 
-            $created = Kehadiran::create([
+            $data = Kehadiran::create([
                 'id_user'      => $user->id,
-                'tanggal'      => $tanggalHariIni,
+                'tanggal'      => $currentTime->format('Y-m-d'),
                 'status'       => 'Sakit',
                 'surat_dokter' => $filename,
             ]);
 
             return response()->json([
                 'status'  => 'success',
-                'message' => 'Absen sakit berhasil.',
-                'data'    => $created,
+                'message' => 'Absen sakit berhasil',
+                'data'    => $data,
             ]);
         }
 
-        // STATUS: Check-in
         if ($request->status === 'checkin') {
             if ($kehadiran) {
                 return response()->json([
                     'status'  => 'error',
-                    'message' => 'Anda sudah melakukan check-in hari ini!',
-                ], 409);
+                    'message' => 'Anda sudah check-in hari ini.',
+                ], 400);
             }
 
-            $isLate = $currentTime->gt(Carbon::createFromTime(7, 0, 0, 'Asia/Jakarta'));
-            $status = $isLate ? 'Terlambat' : 'Hadir';
+            $isLate = $currentTime->gt($jamMasukBatas);
 
-            $created = Kehadiran::create([
+            $data = Kehadiran::create([
                 'id_user'   => $user->id,
-                'tanggal'   => $tanggalHariIni,
+                'tanggal'   => $currentTime->format('Y-m-d'),
                 'jam_masuk' => $currentTime->format('H:i:s'),
-                'status'    => $status,
+                'status'    => $isLate ? 'Terlambat' : 'Hadir',
             ]);
 
             return response()->json([
                 'status'  => 'success',
                 'message' => 'Check-in berhasil',
-                'data'    => $created,
+                'data'    => $data,
             ]);
         }
 
-        // STATUS: Checkout
+        // STATUS CHECKOUT
         if ($request->status === 'checkout') {
-            $jamPulangBatas = Carbon::createFromTime(17, 0, 0, 'Asia/Jakarta');
-
-            if ($currentTime->lessThan($jamPulangBatas)) {
-                return response()->json([
-                    'status'  => 'error',
-                    'message' => 'Belum bisa check-out sebelum jam 17:00.',
-                ], 403);
-            }
-
             if (! $kehadiran) {
                 return response()->json([
                     'status'  => 'error',
-                    'message' => 'Anda belum melakukan check-in.',
-                ], 404);
+                    'message' => 'Belum melakukan check-in.',
+                ], 400);
             }
 
-            $jamMasuk = Carbon::parse($kehadiran->jam_masuk, 'Asia/Jakarta');
-            $durasi   = $jamMasuk->diff($currentTime);
+            if ($currentTime->lt($jamPulangBatas)) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => 'Belum bisa absen pulang sebelum jam 17:00.',
+                ], 400);
+            }
+
+            $jamMasuk    = Carbon::parse($kehadiran->jam_masuk, 'Asia/Jakarta');
+            $jamKeluar   = $currentTime;
+            $durasiKerja = $jamMasuk->diff($jamKeluar);
 
             $kehadiran->update([
-                'jam_keluar' => $currentTime->format('H:i:s'),
-                'jam_kerja'  => $durasi->h . ' jam ' . $durasi->i . ' menit',
+                'jam_keluar' => $jamKeluar->format('H:i:s'),
+                'jam_kerja'  => $durasiKerja->h . ' jam ' . $durasiKerja->i . ' menit',
             ]);
 
             return response()->json([
                 'status'  => 'success',
-                'message' => 'Check-out berhasil.',
+                'message' => 'Check-out berhasil',
                 'data'    => $kehadiran,
             ]);
         }
@@ -137,6 +128,6 @@ class ApiKehadiranController extends Controller
         return response()->json([
             'status'  => 'error',
             'message' => 'Status tidak valid.',
-        ], 422);
+        ], 400);
     }
 }

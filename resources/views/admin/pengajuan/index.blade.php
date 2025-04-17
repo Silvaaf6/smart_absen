@@ -25,20 +25,15 @@
                                 <tr>
                                     <th class="border-bottom font-14 font-weight-medium text-muted">No</th>
                                     @if (Auth::user()->hasRole('admin'))
-                                        <th class="border-bottom font-14 font-weight-medium text-muted">Nama
-                                            User</th>
+                                        <th class="border-bottom font-14 font-weight-medium text-muted">Nama User</th>
                                     @endif
-                                    <th class="border-bottom font-14 font-weight-medium text-muted">Kategori
-                                    </th>
-                                    <th class="border-bottom font-14 font-weight-medium text-muted">Tanggal
-                                        Mulai</th>
-                                    <th class="border-bottom font-14 font-weight-medium text-muted">Tanggal
-                                        Selesai</th>
+                                    <th class="border-bottom font-14 font-weight-medium text-muted">Kategori</th>
+                                    <th class="border-bottom font-14 font-weight-medium text-muted">Tanggal Mulai</th>
+                                    <th class="border-bottom font-14 font-weight-medium text-muted">Tanggal Selesai</th>
                                     <th class="border-bottom font-14 font-weight-medium text-muted">Alasan</th>
                                     <th class="border-bottom font-14 font-weight-medium text-muted">Status</th>
                                     @if (Auth::user()->hasRole('admin'))
-                                        <th class="border-bottom font-14 font-weight-medium text-muted">Aksi
-                                        </th>
+                                        <th class="border-bottom font-14 font-weight-medium text-muted">Aksi</th>
                                     @endif
                                 </tr>
                             </thead>
@@ -74,29 +69,33 @@
 
                                             @if (Auth::user()->hasRole('admin'))
                                                 <td>
-                                                    <div class="dropdown">
-                                                        <button class="btn dropdown-toggle" type="button"
-                                                            id="dropdownMenuButton{{ $cuti->id }}"
-                                                            data-toggle="dropdown" aria-haspopup="true"
-                                                            aria-expanded="false">
-                                                            <i class="fas fa-ellipsis-v"></i> <!-- Icon Titik Tiga -->
-                                                        </button>
-                                                        <div class="dropdown-menu"
-                                                            aria-labelledby="dropdownMenuButton{{ $cuti->id }}">
-                                                            <form method="POST"
-                                                                action="{{ route('pengajuan_cuti.update', $cuti->id) }}">
-                                                                @csrf
-                                                                @method('PATCH')
-                                                                <button type="submit" name="status" value="diizinkan"
-                                                                    class="dropdown-item text-success">Approve</button>
-                                                                <button type="submit" name="status"
-                                                                    value="tidak diizinkan"
-                                                                    class="dropdown-item text-danger">Tolak</button>
-
-                                                            </form>
-
+                                                    @if ($cuti->status === 'menunggu')
+                                                        <div class="dropdown">
+                                                            <button class="btn dropdown-toggle" type="button"
+                                                                id="dropdownMenuButton{{ $cuti->id }}"
+                                                                data-toggle="dropdown" aria-haspopup="true"
+                                                                aria-expanded="false">
+                                                                <i class="fas fa-ellipsis-v"></i>
+                                                            </button>
+                                                            <div class="dropdown-menu"
+                                                                aria-labelledby="dropdownMenuButton{{ $cuti->id }}">
+                                                                <form method="POST"
+                                                                    action="{{ route('pengajuan_cuti.update', $cuti->id) }}">
+                                                                    @csrf
+                                                                    @method('PATCH')
+                                                                    <button type="submit" name="status" value="diizinkan"
+                                                                        class="dropdown-item text-success">Approve</button>
+                                                                    <button type="submit" name="status"
+                                                                        value="tidak diizinkan"
+                                                                        class="dropdown-item text-danger">Tolak</button>
+                                                                </form>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    @else
+                                                        <button class="btn btn rounded-pill px-2 py-2" disabled>
+                                                            <i class="fas fa-check"></i>
+                                                        </button>
+                                                    @endif
                                                 </td>
                                             @endif
                                         </tr>
@@ -106,7 +105,6 @@
                         </table>
                     </div>
 
-                    {{-- modal --}}
                     <div class="modal fade" id="cuti" tabindex="-1">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -120,7 +118,6 @@
                                         <label>Kategori Cuti</label>
                                         <select class="form-control" name="kategori_cuti" required>
                                             <option value="izin">Izin</option>
-                                            <option value="sakit">Sakit</option>
                                             <option value="cuti">Cuti</option>
                                         </select>
 

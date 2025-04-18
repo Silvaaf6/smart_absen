@@ -9,6 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Favicon icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('admin/assets/images/favicon.png') }}">
     <title>Login</title>
     <!-- Custom CSS -->
@@ -37,8 +38,7 @@
         <!-- ============================================================== -->
         <!-- Login box.scss -->
         <!-- ============================================================== -->
-        <div class="auth-wrapper d-flex no-block justify-content-center align-items-center position-relative"
-            >
+        <div class="auth-wrapper d-flex no-block justify-content-center align-items-center position-relative">
             <div class="auth-box row">
                 <div class="col-lg-7 col-md-5 modal-bg-img">
                     <img src="{{ asset('admin/assets/images/big/login3.png') }}" alt="Background Image"
@@ -70,12 +70,17 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
-                                    <div class="form-group">
+                                    <div class="form-group position-relative">
                                         <label class="text-dark" for="password">Kata Sandi</label>
-                                        <input class="form-control" id="password" type="password"
-                                            aria-describedby="hs-input-helper-text @error('password') is-invalid @enderror"
-                                            name="password" value="{{ old('password') }}" required
-                                            autocomplete="off" autofocus placeholder="enter your password">
+                                        <input class="form-control @error('password') is-invalid @enderror"
+                                            id="password" type="password" name="password" value="{{ old('password') }}"
+                                            required autocomplete="off" autofocus placeholder="enter your password">
+
+                                        <!-- Icon mata -->
+                                        <span onclick="togglePassword()" class="position-absolute"
+                                            style="top: 38px; right: 15px; cursor: pointer;">
+                                            <i id="togglePasswordIcon" class="fa fa-eye text-secondary"></i>
+                                        </span>
 
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
@@ -84,6 +89,7 @@
                                         @enderror
                                     </div>
                                 </div>
+
                                 <div class="col-lg-12 text-center">
                                     <button type="submit" class="btn btn-block btn-dark">Masuk</button>
                                 </div>
@@ -110,6 +116,23 @@
     <script>
         $(".preloader ").fadeOut();
     </script>
+    <script>
+        function togglePassword() {
+            const password = document.getElementById("password");
+            const icon = document.getElementById("togglePasswordIcon");
+
+            if (password.type === "password") {
+                password.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                password.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
+
 </body>
 
 </html>

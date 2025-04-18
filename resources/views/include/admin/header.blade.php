@@ -56,7 +56,6 @@
                         <ul class="list-style-none">
                             <li>
                                 <div class="message-center notifications position-relative">
-                                    <!-- Message -->
                                     <a href="javascript:void(0)"
                                         class="message-item d-flex align-items-center border-bottom px-3 py-2">
                                         <span class="btn btn-primary rounded-circle btn-circle"><i data-feather="box"

@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use Alert;
 use App\Models\Jabatan;
 use App\Models\Kehadiran;
@@ -9,44 +8,59 @@ use App\Models\Pengajuan_cuti;
 use App\Models\User;
 use Carbon\carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     public function home(Request $request)
-{
-    $jumlahPegawai = User::whereHas('roles', function ($query) {
-        $query->where('name', 'user');
-    })->count();
+    {
+        $jumlahJabatan = Jabatan::count();
 
-    $jumlahJabatan = Jabatan::count();
+        $jumlahPegawai = User::whereHas('roles', function ($query) {
+            $query->where('name', 'user');
+        })->count();
 
-    $tanggal = $request->input('tanggal') ?: Carbon::now('Asia/Jakarta')->format('Y-m-d');
+        // dd($jumlahPegawai);
 
-    $jumlahHadir = Kehadiran::whereDate('tanggal', $tanggal)
-        ->whereIn('status', ['Hadir', 'Terlambat'])
-        ->distinct('id_user')
-        ->count('id_user');
 
-    $jumlahCuti = Pengajuan_cuti::whereDate('tgl_pengajuan', $tanggal)
-        ->whereIn('status', ['menunggu konfirmasi'])
-        ->distinct('id_user')
-        ->count('id_user');
+        $tanggal = $request->input('tanggal') ?: Carbon::now('Asia/Jakarta')->format('Y-m-d');
 
-    // Cek apakah user sudah absen hari ini
-    $userId = Auth::id();
-    $absenHariIni = Kehadiran::where('id_user', $userId)
-        ->whereDate('tanggal', $tanggal)
-        ->exists();
+        $jumlahHadir = Kehadiran::whereDate('tanggal', $tanggal)
+            ->whereIn('status', ['Hadir', 'Terlambat'])
+            ->distinct('id_user')
+            ->count('id_user');
 
-    return view('home', compact(
-        'jumlahPegawai',
-        'jumlahJabatan',
-        'jumlahHadir',
-        'jumlahCuti',
-        'absenHariIni'
-    ));
-}
+        $jumlahCuti = Pengajuan_cuti::whereDate('tgl_pengajuan', $tanggal)
+            ->whereIn('status', ['menunggu konfirmasi'])
+            ->distinct('id_user')
+            ->count('id_user');
 
+        // Cek apakah user sudah absen hari ini
+        $userId       = Auth::id();
+        $absenHariIni = Kehadiran::where('id_user', $userId)
+            ->whereDate('tanggal', $tanggal)
+            ->exists();
+
+        // $jumlahNotif = pengajuan_cuti::where('status', 'pending')->count();
+        // $daftarNotif = pengajuan_cuti::where('status', 'pending')->latest()->take(5)->get();
+
+        return view('home', compact(
+            'jumlahPegawai',
+            'jumlahJabatan',
+            'jumlahHadir',
+            'jumlahCuti',
+            'absenHariIni'
+        ));
+    }
+
+    // public function notif()
+    // {
+    //     $jumlahNotif = pengajuan_cuti::where('status', 'pending')->count();
+    //     $daftarNotif = pengajuan_cuti::where('status', 'pending')->latest()->take(5)->get();
+
+    //     return view('admin.pengajuan.index', compact('pengajuan','jumlahNotif', 'daftarNotif'));
+
+    // }
 
     public function index()
     {
@@ -54,9 +68,11 @@ class UserController extends Controller
             $query->where('name', 'admin');
         })->with('jabatan')->get();
 
-        $jabatan = Jabatan::all();
+        $jabatan     = Jabatan::all();
+        $jumlahNotif = pengajuan_cuti::where('status', 'menunggu konfirmasi')->count();
+        $daftarNotif = pengajuan_cuti::where('status', 'menunggu konfirmasi')->latest()->take(5)->get();
 
-        return view('admin.user.index', compact('user', 'jabatan'));
+        return view('admin.user.index', compact('user', 'jabatan', 'jumlahNotif', 'daftarNotif'));
     }
 
     public function indexapi()
@@ -122,7 +138,6 @@ class UserController extends Controller
         $user->agama         = $request->agama;
         $user->no_telp       = $request->no_telp;
 
-// Cek apakah user bukan admin sebelum menyimpan cover
         if ($request->hasFile('cover') && ! $request->user()->hasRole('admin')) {
             $img  = $request->file('cover');
             $name = 'cover_' . time() . '.' . $img->getClientOriginalExtension();
@@ -139,7 +154,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user    = User::with('jabatan')->where('id', $id)->first();
-        $jabatan = Jabatan::all(); // Ambil semua data jabatan
+        $jabatan = Jabatan::all();
 
         return view('admin.user.show', compact('user', 'jabatan'));
     }

@@ -29,7 +29,7 @@ class KehadiranController extends Controller
         return view('admin.kehadiran.index', compact('kehadirans', 'check_kehadiran', 'hasKehadiran'));
     }
 
-    
+
 
     /**
      * Show the form for creating a new resource.

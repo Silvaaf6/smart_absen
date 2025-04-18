@@ -23,14 +23,6 @@ class PengajuanCutiController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -42,13 +34,13 @@ class PengajuanCutiController extends Controller
             'alasan'        => 'required',
         ]);
 
-        // Cek apakah user sudah mengajukan cuti pada hari yang sama
-        $cekCuti = pengajuan_cuti::where('id_user', Auth::id())
-            ->whereDate('tgl_pengajuan', now()->toDateString())
-            ->exists();
+        // Cek total pengajuan cuti dalam tahun ini
+        $jumlahCutiTahunIni = pengajuan_cuti::where('id_user', Auth::id())
+            ->whereYear('tgl_pengajuan', now()->year)
+            ->count();
 
-        if ($cekCuti) {
-            return redirect()->route('pengajuan_cuti.index')->with('error', 'Anda sudah mengajukan cuti hari ini!');
+        if ($jumlahCutiTahunIni >= 12) {
+            return redirect()->route('pengajuan_cuti.index')->with('error', 'Pengajuan cuti sudah mencapai batas maksimal 12 kali dalam 1 tahun.');
         }
 
         // Simpan pengajuan cuti
@@ -67,49 +59,26 @@ class PengajuanCutiController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(pengajuan_cuti $pengajuan_cuti)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(pengajuan_cuti $pengajuan_cuti)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, pengajuan_cuti $pengajuan_cuti)
-    {
-        if (! Auth::user()->hasRole('admin')) {
-            return redirect()->route('pengajuan_cuti.index')->with('error', 'Anda tidak memiliki izin.');
-        }
-
-        $status = $request->status;
-
-        if (! in_array($status, ['diizinkan', 'tidak diizinkan'])) {
-            return redirect()->route('pengajuan_cuti.index')->with('error', 'Status tidak valid.');
-        }
-
-        $pengajuan_cuti->update([
-            'status' => $status,
-        ]);
-
-        Alert::success("Pengajuan cuti telah $status.", 'success')->autoClose(1000);
-        return redirect()->route('pengajuan_cuti.index');
+{
+    if (! Auth::user()->hasRole('admin')) {
+        return redirect()->route('pengajuan.index')->with('error', 'Anda tidak memiliki izin.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(pengajuan_cuti $pengajuan_cuti)
-    {
-        //
-    }
+    $status = $request->status;
+
+    if (! in_array($status, ['diizinkan', 'tidak diizinkan'])) {
+    return redirect()->route('pengajuan.index')->with('error', 'Status tidak valid.');
+}
+// Update status pengajuan cuti
+    $pengajuan_cuti->update([
+        'status' => $status,
+    ]);
+
+    \Alert::success("Pengajuan cuti telah $status.", 'success')->autoClose(1000);
+    return redirect()->route('pengajuan_cuti.index');
+}
+
 }

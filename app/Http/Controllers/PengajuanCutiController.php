@@ -34,7 +34,7 @@ class PengajuanCutiController extends Controller
             'alasan'        => 'required',
         ]);
 
-        // Cek total pengajuan cuti dalam tahun ini
+        // pengajuan cuti dalam tahun ini
         $jumlahCutiTahunIni = pengajuan_cuti::where('id_user', Auth::id())
             ->whereYear('tgl_pengajuan', now()->year)
             ->count();
@@ -43,7 +43,6 @@ class PengajuanCutiController extends Controller
             return redirect()->route('pengajuan_cuti.index')->with('error', 'Pengajuan cuti sudah mencapai batas maksimal 12 kali dalam 1 tahun.');
         }
 
-        // Simpan pengajuan cuti
         pengajuan_cuti::create([
             'id_user'       => Auth::id(),
             'tgl_pengajuan' => now(),
@@ -62,23 +61,23 @@ class PengajuanCutiController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, pengajuan_cuti $pengajuan_cuti)
-{
-    if (! Auth::user()->hasRole('admin')) {
-        return redirect()->route('pengajuan.index')->with('error', 'Anda tidak memiliki izin.');
+    {
+        if (! Auth::user()->hasRole('admin')) {
+            return redirect()->route('pengajuan.index')->with('error', 'Anda tidak memiliki izin.');
+        }
+
+        $status = $request->status;
+
+        if (! in_array($status, ['diizinkan', 'tidak diizinkan'])) {
+            return redirect()->route('pengajuan.index')->with('error', 'Status tidak valid.');
+        }
+
+        $pengajuan_cuti->update([
+            'status' => $status,
+        ]);
+
+        \Alert::success("Pengajuan cuti telah $status.", 'success')->autoClose(1000);
+        return redirect()->route('pengajuan_cuti.index');
     }
-
-    $status = $request->status;
-
-    if (! in_array($status, ['diizinkan', 'tidak diizinkan'])) {
-    return redirect()->route('pengajuan.index')->with('error', 'Status tidak valid.');
-}
-// Update status pengajuan cuti
-    $pengajuan_cuti->update([
-        'status' => $status,
-    ]);
-
-    \Alert::success("Pengajuan cuti telah $status.", 'success')->autoClose(1000);
-    return redirect()->route('pengajuan_cuti.index');
-}
 
 }

@@ -12,10 +12,13 @@
                 <a href="index.html">
                     <b class="logo-icon">
                         <!-- Dark Logo icon -->
-                        <img src="{{ asset('admin/assets/images/logo-icon.png') }}" alt="homepage" class="dark-logo" />
+                        <img src="{{ asset('admin/assets/images/logo.png') }}" alt="homepage" class="dark-logo"
+                            style="width: 50px;" />
                         <!-- Light Logo icon -->
-                        <img src="{{ asset('admin/assets/images/logo-icon.png') }}" alt="homepage" class="light-logo" />
+                        <img src="{{ asset('admin/assets/images/logo.png') }}" alt="homepage" class="light-logo"
+                            style="width: 50px;" />
                     </b>
+
                     <!--End Logo icon -->
                     <!-- Logo text -->
                     <span class="logo-text">

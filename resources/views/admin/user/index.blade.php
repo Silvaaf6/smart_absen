@@ -31,13 +31,13 @@
                             </thead>
                             <tbody>
                                 @php $no = 1 @endphp
-                                @if ($user->isEmpty())
+                                @if ($pegawai->isEmpty())
                                     <tr>
                                         <td colspan="6" class="text-center text-muted font-14">Tidak ada data pegawai.
                                         </td>
                                     </tr>
                                 @else
-                                    @foreach ($user as $data)
+                                    @foreach ($pegawai as $data)
                                         <tr>
                                             <td class="border-bottom text-muted font-14">{{ $no++ }}</td>
                                             {{-- <td class="border-bottom text-muted font-14">
@@ -119,8 +119,9 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="text-dark">Profile</label>
-                                                <input class="form-control" id="cover" type="file" name="cover"
-                                                    required placeholder="Masukkan foto profile">
+        <input type="file" class="form-control" id="cover" name="cover" {{ isset($user) ? '' : 'required' }}>
+
+
                                             </div>
                                             <div class="form-group">
                                                 <label class="text-dark" for="nama_jabatan">Jabatan</label>
@@ -200,7 +201,7 @@
                     </div>
                 </div>
 
-                
+
             </div>
         </div>
     </div>

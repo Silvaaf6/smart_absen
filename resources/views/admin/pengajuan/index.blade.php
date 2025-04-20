@@ -4,7 +4,6 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
-                    <!-- Bagian Judul dan Tombol Ajukan Cuti -->
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="card-title">
                             @if (Auth::user()->hasRole('admin'))
@@ -24,21 +23,23 @@
                         <table class="table no-wrap v-middle mb-0">
                             <thead>
                                 <tr>
-                                    <th class="border-bottom font-14 text-center font-weight-medium text-muted">No</th>
+                                    <th class="border-bottom font-14 font-weight-medium text-muted">No</th>
                                     @if (Auth::user()->hasRole('admin'))
-                                        <th class="border-bottom font-14 text-center font-weight-medium text-muted">Nama
+                                        <th class="border-bottom font-14 font-weight-medium text-muted">Nama
                                             User</th>
                                     @endif
-                                    <th class="border-bottom font-14 text-center font-weight-medium text-muted">Kategori
+                                    <th class="border-bottom font-14 font-weight-medium text-muted">Kategori
                                     </th>
-                                    <th class="border-bottom font-14 text-center font-weight-medium text-muted">Tanggal
+                                    <th class="border-bottom font-14 font-weight-medium text-muted">Tanggal
+                                        Pengajuan</th>
+                                    <th class="border-bottom font-14 font-weight-medium text-muted">Tanggal
                                         Mulai</th>
-                                    <th class="border-bottom font-14 text-center font-weight-medium text-muted">Tanggal
+                                    <th class="border-bottom font-14 font-weight-medium text-muted">Tanggal
                                         Selesai</th>
-                                    <th class="border-bottom font-14 text-center font-weight-medium text-muted">Alasan</th>
-                                    <th class="border-bottom font-14 text-center font-weight-medium text-muted">Status</th>
+                                    <th class="border-bottom font-14 font-weight-medium text-muted">Alasan</th>
+                                    <th class="border-bottom font-14 font-weight-medium text-muted">Status</th>
                                     @if (Auth::user()->hasRole('admin'))
-                                        <th class="border-bottom font-14 text-center font-weight-medium text-muted">Aksi
+                                        <th class="border-bottom font-14 font-weight-medium text-muted">Aksi
                                         </th>
                                     @endif
                                 </tr>
@@ -59,6 +60,8 @@
                                                 <td>{{ $cuti->user->name }}</td>
                                             @endif
                                             <td>{{ ucfirst($cuti->kategori_cuti) }}</td>
+                                            <td>{{ $cuti->tgl_pengajuan }}</td>
+
                                             <td>{{ $cuti->tgl_mulai }}</td>
                                             <td>{{ $cuti->tgl_selesai }}</td>
                                             <td>{{ $cuti->alasan }}</td>
@@ -80,7 +83,7 @@
                                                             id="dropdownMenuButton{{ $cuti->id }}"
                                                             data-toggle="dropdown" aria-haspopup="true"
                                                             aria-expanded="false">
-                                                            <i class="fas fa-ellipsis-v"></i> <!-- Icon Titik Tiga -->
+                                                            <i class="fas fa-ellipsis-v"></i>
                                                         </button>
                                                         <div class="dropdown-menu"
                                                             aria-labelledby="dropdownMenuButton{{ $cuti->id }}">
@@ -106,7 +109,6 @@
                         </table>
                     </div>
 
-                    <!-- Modal Form Ajukan Cuti -->
                     <div class="modal fade" id="cuti" tabindex="-1">
                         <div class="modal-dialog">
                             <div class="modal-content">

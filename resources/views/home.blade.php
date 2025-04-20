@@ -6,7 +6,7 @@
             <div class="page-breadcrumb">
                 <div class="row mb-4">
                     <div class="col-7 align-self-center">
-                        <h3 class="page-title text-truncate text-dark font-weight-medium mb-1">Good Morning
+                        <h3 class="page-title text-truncate text-dark font-weight-medium mb-1">Selamat Datang
                             {{ Auth::user()->name }}!</h3>
                         <div class="d-flex align-items-center">
                             <nav aria-label="breadcrumb">
@@ -45,7 +45,7 @@
                                         </h6>
                                     </div>
                                     <div class="ml-auto mt-md-3 mt-lg-0">
-                                        <span class="opacity-7 text-muted"><i data-feather="dollar-sign"></i></span>
+                                        <span class="opacity-7 text-muted"><i class="icon-briefcase" style="font-size: 20px; "></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -61,7 +61,7 @@
                                             Ini</h6>
                                     </div>
                                     <div class="ml-auto mt-md-3 mt-lg-0">
-                                        <span class="opacity-7 text-muted"><i data-feather="file-plus"></i></span>
+                                        <span class="opacity-7 text-muted"><i class="icon-book-open" style="font-size: 20px; "></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -75,7 +75,7 @@
                                         </h6>
                                     </div>
                                     <div class="ml-auto mt-md-3 mt-lg-0">
-                                        <span class="opacity-7 text-muted"><i data-feather="globe"></i></span>
+                                        <span class="opacity-7 text-muted"><i class="icon-notebook" style="font-size: 20px; "></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -107,8 +107,8 @@
 
             <div class="carousel-inner rounded shadow">
                 <div class="carousel-item active">
-                    <img src="{{ asset('images/slide1.jpg') }}" class="d-block w-100"
-                        style="height:200px; object-fit: cover; border-radius: 15px;" alt="Slide 1">
+                    <img src="{{ asset('images/slide1.png') }}" class="d-block w-100"
+                        style="height:300px; object-fit: cover;" alt="Slide 1">
                     <div class="carousel-caption d-none d-md-block">
                         <h5>Selamat Datang, {{ Auth::user()->name }}</h5>
                         <p>Ini adalah dashboard utama kamu. Cek aktivitas dan informasi penting di sini.</p>
@@ -132,14 +132,14 @@
                 </div>
             </div>
 
-            <a class="carousel-control-prev" href="#userDashboardCarousel" role="button" data-slide="prev">
+            {{-- <a class="carousel-control-prev" href="#userDashboardCarousel" role="button" data-slide="prev">
                 <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
                 <span class="sr-only">Sebelumnya</span>
             </a>
             <a class="carousel-control-next" href="#userDashboardCarousel" role="button" data-slide="next">
                 <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
                 <span class="sr-only">Selanjutnya</span>
-            </a>
+            </a> --}}
         </div>
 
         <div class="mt-4">

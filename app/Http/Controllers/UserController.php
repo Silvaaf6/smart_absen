@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Alert;
@@ -6,9 +7,10 @@ use App\Models\Jabatan;
 use App\Models\Kehadiran;
 use App\Models\Pengajuan_cuti;
 use App\Models\User;
-use Carbon\carbon;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -19,10 +21,9 @@ class UserController extends Controller
         $jumlahPegawai = User::whereHas('roles', function ($query) {
             $query->where('name', 'user');
         })->count();
+        // $jumlahPegawai = User::role('user')->count();
 
         // dd($jumlahPegawai);
-
-
         $tanggal = $request->input('tanggal') ?: Carbon::now('Asia/Jakarta')->format('Y-m-d');
 
         $jumlahHadir = Kehadiran::whereDate('tanggal', $tanggal)
@@ -35,14 +36,10 @@ class UserController extends Controller
             ->distinct('id_user')
             ->count('id_user');
 
-        // Cek apakah user sudah absen hari ini
-        $userId       = Auth::id();
+        $userId = Auth::id();
         $absenHariIni = Kehadiran::where('id_user', $userId)
             ->whereDate('tanggal', $tanggal)
             ->exists();
-
-        // $jumlahNotif = pengajuan_cuti::where('status', 'pending')->count();
-        // $daftarNotif = pengajuan_cuti::where('status', 'pending')->latest()->take(5)->get();
 
         return view('home', compact(
             'jumlahPegawai',
@@ -53,50 +50,38 @@ class UserController extends Controller
         ));
     }
 
-    // public function notif()
-    // {
-    //     $jumlahNotif = pengajuan_cuti::where('status', 'pending')->count();
-    //     $daftarNotif = pengajuan_cuti::where('status', 'pending')->latest()->take(5)->get();
-
-    //     return view('admin.pengajuan.index', compact('pengajuan','jumlahNotif', 'daftarNotif'));
-
-    // }
-
     public function index()
     {
-        $user = User::whereDoesntHave('roles', function ($query) {
+        $pegawai = User::whereDoesntHave('roles', function ($query) {
             $query->where('name', 'admin');
         })->with('jabatan')->get();
 
         $jabatan     = Jabatan::all();
-        $jumlahNotif = pengajuan_cuti::where('status', 'menunggu konfirmasi')->count();
-        $daftarNotif = pengajuan_cuti::where('status', 'menunggu konfirmasi')->latest()->take(5)->get();
+        $jumlahNotif = Pengajuan_cuti::where('status', 'menunggu konfirmasi')->count();
+        $daftarNotif = Pengajuan_cuti::where('status', 'menunggu konfirmasi')->latest()->take(5)->get();
 
-        return view('admin.user.index', compact('user', 'jabatan', 'jumlahNotif', 'daftarNotif'));
+        return view('admin.user.index', compact('pegawai', 'jabatan', 'jumlahNotif', 'daftarNotif'));
     }
 
     public function indexapi()
     {
-        $user = User::with(['kehadiran', 'jadwal_piket', 'absen_piket', 'jabatan', 'pengajuan_cuti'])->get();
-        $res  = [
+        $pegawai = User::with(['kehadiran', 'jadwal_piket', 'absen_piket', 'jabatan', 'pengajuan_cuti'])->get();
+        return response()->json([
             'success' => true,
             'message' => 'Daftar User',
             'users'   => $user,
-        ];
-        return response()->json($res, 200);
+        ], 200);
     }
 
     public function create()
     {
-        $jabatan = jabatan::all();
-        $user    = user::all();
-        return view('admin.user.index', compact('user', 'jabatan'));
+        $jabatan = Jabatan::all();
+        $pegawai    = User::all();
+        return view('admin.user.index', compact('pegawai', 'jabatan'));
     }
 
     public function store(Request $request)
     {
-        // dd($request->all());
-
         $request->validate([
             'name'          => 'required',
             'email'         => 'required|email',
@@ -110,42 +95,28 @@ class UserController extends Controller
             'agama'         => 'required',
             'no_telp'       => 'required',
             'cover'         => 'required|image|mimes:jpg,jpeg,png|max:65535',
-        ], [
-            'name.required'          => 'Nama wajib diisi.',
-            'email.required'         => 'Email wajib diisi',
-            'password.required'      => 'Password wajib diisi',
-            'nip.required'           => 'NIP wajib diisi',
-            'id_jabatan.required'    => 'Jabatan wajib dipilih',
-            'tempat_lahir.required'  => 'Tempat lahir wajib diisi',
-            'tgl_lahir.required'     => 'Tanggal lahir wajib diisi',
-            'alamat.required'        => 'Alamat wajib diisi',
-            'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih',
-            'agama.required'         => 'Agama wajib dipilih',
-            'no_telp.required'       => 'No telepon wajib diisi',
-            'cover.required'         => 'Foto profile wajib diisi',
         ]);
 
-        $user                = new User();
-        $user->name          = $request->name;
-        $user->email         = $request->email;
-        $user->password      = bcrypt($request->password);
-        $user->nip           = $request->nip;
-        $user->id_jabatan    = $request->id_jabatan;
-        $user->tempat_lahir  = $request->tempat_lahir;
-        $user->tgl_lahir     = $request->tgl_lahir;
-        $user->alamat        = $request->alamat;
-        $user->jenis_kelamin = $request->jenis_kelamin;
-        $user->agama         = $request->agama;
-        $user->no_telp       = $request->no_telp;
+        $pegawai                = new User();
+        $pegawai->name          = $request->name;
+        $pegawai->email         = $request->email;
+        $pegawai->password      = bcrypt($request->password);
+        $pegawai->nip           = $request->nip;
+        $pegawai->id_jabatan    = $request->id_jabatan;
+        $pegawai->tempat_lahir  = $request->tempat_lahir;
+        $pegawai->tgl_lahir     = $request->tgl_lahir;
+        $pegawai->alamat        = $request->alamat;
+        $pegawai->jenis_kelamin = $request->jenis_kelamin;
+        $pegawai->agama         = $request->agama;
+        $pegawai->no_telp       = $request->no_telp;
 
-        if ($request->hasFile('cover') && ! $request->user()->hasRole('admin')) {
-            $img  = $request->file('cover');
-            $name = 'cover_' . time() . '.' . $img->getClientOriginalExtension();
-            $img->move(public_path('admin/images/cover'), $name);
-            $user->cover = $name;
-        }
+        $coverName = time() . '.' . $request->cover->extension();
+        $request->cover->move(public_path('uploads'), $coverName);
+        $coverPath = 'uploads/' . $coverName;
 
-        $user->save();
+        $pegawai->cover = $coverPath;
+        $pegawai->save();
+        $pegawai->assignRole('user');
 
         Alert::success('Sukses', 'Data Berhasil Ditambah!')->autoClose(1000);
         return redirect()->route('pegawai.index');
@@ -153,40 +124,23 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user    = User::with('jabatan')->where('id', $id)->first();
+        $pegawai    = User::with('jabatan')->where('id', $id)->first();
         $jabatan = Jabatan::all();
-
-        return view('admin.user.show', compact('user', 'jabatan'));
+        return view('admin.user.show', compact('pegawai', 'jabatan'));
     }
 
     public function edit($id)
     {
-        $user    = User::findOrFail($id);
+        $pegawai    = User::findOrFail($id);
         $jabatan = Jabatan::all();
-        return view('admin.user.edit', compact('user', 'jabatan'));
+        return view('admin.user.edit', compact('pegawai', 'jabatan'));
     }
 
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        $pegawai = User::findOrFail($id);
 
-        // Validasi Input
-        // $request->validate([
-        //     'name'          => 'required|string|max:255',
-        //     'email'         => 'required|email|unique:users,email,' . $id,
-        //     'nip'           => 'required|numeric',
-        //     'id_jabatan'    => 'required|exists:jabatan,id',
-        //     'tempat_lahir'  => 'required|string|max:255',
-        //     'tgl_lahir'     => 'required|date',
-        //     'alamat'        => 'required|string|max:255',
-        //     'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-        //     'agama'         => 'required|string|max:50',
-        //     'no_telp'       => 'required|numeric',
-        //     'cover'         => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        // ]);
-
-        // Update data kecuali password
-        $user->update([
+        $pegawai->update([
             'name'          => $request->name,
             'email'         => $request->email,
             'nip'           => $request->nip,
@@ -199,30 +153,26 @@ class UserController extends Controller
             'no_telp'       => $request->no_telp,
         ]);
 
-        // Update password jika diisi
         if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
+            $pegawai->password = Hash::make($request->password);
         }
 
-        // Upload cover jika ada
         if ($request->hasFile('cover')) {
             $img  = $request->file('cover');
-            $name = time() . '-' . $img->getClientOriginalName();
-            $img->move(public_path('images/user/'), $name);
+            $name = time() . '.' . $img->getClientOriginalExtension();
+            $img->move(public_path('uploads'), $name);
 
             // Hapus cover lama jika ada
-            if ($user->cover && file_exists(public_path('images/user/' . $user->cover))) {
-                unlink(public_path('images/user/' . $user->cover));
+            if ($pegawai->cover && file_exists(public_path($pegawai->cover))) {
+                unlink(public_path($pegawai->cover));
             }
 
-            $user->cover = $name;
+            $pegawai->cover = 'uploads/' . $name;
         }
 
-        $user->save();
+        $pegawai->save();
 
-        // Notifikasi sukses
         Alert::success('Sukses', 'Data Berhasil Diubah!')->autoClose(1000);
-        return redirect()->route('pegawai.show', ['pegawai' => $user->id]);
+        return redirect()->route('pegawai.show', ['pegawai' => $pegawai->id]);
     }
-
 }

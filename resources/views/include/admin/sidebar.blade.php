@@ -65,15 +65,16 @@
                         </a>
                     </li>
                 @endrole
-                @role('user')
+                @if (!Auth::user()->hasRole('admin'))
                     <li class="nav-small-cap"><span class="hide-menu"></span>Profil</li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ route('pegawai.show', Auth::user()->id) }}" aria-expanded="false">
+                        <a class="sidebar-link" href="{{ route('pegawai.show', Auth::user()->id) }}"
+                            aria-expanded="false">
                             <i class="icon-user" style="font-size: 20px;"></i>
                             <span class="hide-menu">Profil Saya</span>
                         </a>
                     </li>
-                @endrole
+                @endif
             </ul>
         </nav>
         <!-- End Sidebar navigation -->

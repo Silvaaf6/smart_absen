@@ -12,11 +12,11 @@
                 <a href="index.html">
                     <b class="logo-icon">
                         <!-- Dark Logo icon -->
-                        <img src="{{ asset('admin/assets/images/logo.png') }}" alt="homepage" class="dark-logo"
-                            style="width: 50px;" />
+                        <img src="{{ asset('admin/assets/images/logoo.png') }}" alt="homepage" class="dark-logo"
+                            style="width: 70px;" />
                         <!-- Light Logo icon -->
-                        <img src="{{ asset('admin/assets/images/logo.png') }}" alt="homepage" class="light-logo"
-                            style="width: 50px;" />
+                        {{-- <img src="{{ asset('admin/assets/images/logoo.png') }}" alt="homepage" class="light-logo"
+                            style="width: 70px;" /> --}}
                     </b>
 
                     <!--End Logo icon -->
@@ -24,9 +24,9 @@
                     <span class="logo-text">
                         <!-- dark Logo text -->
                         <img src="{{ asset('admin/assets/images/icon2.png') }}" alt="homepage" class="dark-logo"
-                            style="width: 150px;" />
+                            style="width: 140px;" />
                         <!-- Light Logo text -->
-                        <img src="{{ asset('admin/assets/images/icon2.png') }}" class="light-logo" alt="homepage" />
+                        {{-- <img src="{{ asset('admin/assets/images/icon2.png') }}" class="light-logo" alt="homepage" /> --}}
                     </span>
                 </a>
             </div>
@@ -49,7 +49,7 @@
             <!-- ============================================================== -->
             <ul class="navbar-nav float-left mr-auto ml-3 pl-1">
                 <!-- Notification -->
-                <li class="nav-item dropdown">
+                {{-- <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle pl-md-3 position-relative" href="javascript:void(0)"
                         id="bell" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span><i data-feather="bell" class="svg-icon"></i></span>
@@ -80,7 +80,7 @@
                             </li>
                         </ul>
                     </div>
-                </li>
+                </li> --}}
                 <!-- End Notification -->
                 <!-- ============================================================== -->
                 <!-- create new -->
@@ -101,23 +101,12 @@
                     <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         @if (Auth::user()->hasRole('user'))
-                            <img src="{{ Auth::user()->cover }}" alt="user" class="rounded-circle" width="40">
+                            <img src="{{ asset(Auth::user()->cover) }}" alt="" class="rounded-circle" width="50" height="50" style="object-fit: cover;">
                         @endif
-                        <span class="ml-2 d-none d-lg-inline-block"><span class="text-dark"> {{ Auth::user()->name }}
+                        <span class="ml-2 d-none d-lg-inline-block fs-1"><span class="text-dark"> {{ Auth::user()->name }}
                             </span> <i data-feather="chevron-down" class="svg-icon"></i></span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
-                        @if (Auth::user()->hasRole('user'))
-                            <a class="dropdown-item" href="javascript:void(0)"><i data-feather="user"
-                                    class="svg-icon mr-2 ml-1"></i>
-                                Profile</a>
-
-                            {{-- <a class="dropdown-item" href="javascript:void(0)"><i data-feather="mail"
-                                    class="svg-icon mr-2 ml-1"></i>
-                                    Inbox</a> --}}
-
-                            <div class="dropdown-divider"></div>
-                        @endif
                         <form id="logout-form" action="{{ route('logout') }}" method="POST">
                             @csrf
                             <a class="dropdown-item" href="javascript:void(0)"

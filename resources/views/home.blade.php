@@ -107,8 +107,8 @@
 
             <div class="carousel-inner rounded shadow">
                 <div class="carousel-item active">
-                    <img src="{{ asset('images/slide1.png') }}" class="d-block w-100"
-                        style="height:300px; object-fit: cover;" alt="Slide 1">
+                    <img src="{{ asset('images/slide.jpg') }}" class="d-block w-100"
+                        style="height:200px; object-fit: cover;" alt="Slide 1">
                     <div class="carousel-caption d-none d-md-block">
                         <h5>Selamat Datang, {{ Auth::user()->name }}</h5>
                         <p>Ini adalah dashboard utama kamu. Cek aktivitas dan informasi penting di sini.</p>
@@ -116,7 +116,7 @@
                 </div>
                 <div class="carousel-item">
                     <img src="{{ asset('images/slide2.jpg') }}" class="d-block w-100"
-                        style="height:200px; object-fit: cover; border-radius: 15px;" alt="Slide 2">
+                        style="height:200px; object-fit: cover;" alt="Slide 2">
                     <div class="carousel-caption d-none d-md-block">
                         <h5>Status Kehadiran</h5>
                         <p>Pastikan kamu selalu update absensi kamu setiap hari.</p>
@@ -124,7 +124,7 @@
                 </div>
                 <div class="carousel-item">
                     <img src="{{ asset('images/slide3.jpg') }}" class="d-block w-100"
-                        style="height:200px; object-fit: cover; border-radius: 15px;" alt="Slide 3">
+                        style="height:200px; object-fit: cover;" alt="Slide 3">
                     <div class="carousel-caption d-none d-md-block">
                         <h5>Ajukan Cuti</h5>
                         <p>Kamu bisa mengajukan cuti langsung dari dashboard ini.</p>

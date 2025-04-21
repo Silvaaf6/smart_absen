@@ -26,7 +26,7 @@
                                     <th class="border-bottom font-14 font-weight-medium text-muted">No</th>
                                     @if (Auth::user()->hasRole('admin'))
                                         <th class="border-bottom font-14 font-weight-medium text-muted">Nama
-                                            User</th>
+                                        </th>
                                     @endif
                                     <th class="border-bottom font-14 font-weight-medium text-muted">Kategori
                                     </th>
@@ -60,10 +60,10 @@
                                                 <td>{{ $cuti->user->name }}</td>
                                             @endif
                                             <td>{{ ucfirst($cuti->kategori_cuti) }}</td>
-                                            <td>{{ $cuti->tgl_pengajuan }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($cuti->tgl_pengajuan)->format('d-m-Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($cuti->tgl_mulai)->format('d-m-Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($cuti->tgl_selesai)->format('d-m-Y') }}</td>
 
-                                            <td>{{ $cuti->tgl_mulai }}</td>
-                                            <td>{{ $cuti->tgl_selesai }}</td>
                                             <td>{{ $cuti->alasan }}</td>
                                             <td>
                                                 @if ($cuti->status == 'diizinkan')
@@ -122,7 +122,6 @@
                                         <label>Kategori Cuti</label>
                                         <select class="form-control" name="kategori_cuti" required>
                                             <option value="izin">Izin</option>
-                                            <option value="sakit">Sakit</option>
                                             <option value="cuti">Cuti</option>
                                         </select>
 

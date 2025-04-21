@@ -13,8 +13,6 @@
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('jabatan.index') }}" aria-expanded="false">
                             <i class="icon-briefcase" style="font-size: 20px; "></i>
-
-                            {{-- <i data-feather="tag" class="feather-icon"></i> --}}
                             <span class="hide-menu">Jabatan</span>
                         </a>
                     </li>
@@ -28,7 +26,6 @@
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="{{ route('kehadiran.index') }}" aria-expanded="false">
                         <i class="icon-book-open" style="font-size: 20px; "></i>
-                        {{-- <i data-feather="message-square" class="feather-icon" style="display: none;"></i> --}}
                         <span class="hide-menu">Absensi</span>
                     </a>
                 </li>
@@ -39,21 +36,11 @@
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="{{ route('pengajuan_cuti.index') }}" aria-expanded="false">
                         <i class="icon-notebook" style="font-size: 20px; "></i>
-                        {{-- <i data-feather="message-square" class="feather-icon" style="display: none;"></i> --}}
                         <span class="hide-menu">Pengajuan Cuti</span>
                     </a>
                 </li>
 
                 <li class="list-divider"></li>
-
-                {{-- <li class="nav-small-cap"><span class="hide-menu">Piket</span></li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{ route('jadwal_piket.index')}}" aria-expanded="false">
-                        <i class="icon-book-open" style="font-size: 20px; "></i>
-                        <i data-feather="message-square" class="feather-icon" style="display: none;"></i>
-                        <span class="hide-menu">Jadwal Piket</span>
-                    </a>
-                </li> --}}
 
                 @role('admin')
                     <li class="nav-small-cap"><span class="hide-menu"></span>Laporan</li>

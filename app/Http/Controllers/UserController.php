@@ -21,9 +21,7 @@ class UserController extends Controller
         $jumlahPegawai = User::whereHas('roles', function ($query) {
             $query->where('name', 'user');
         })->count();
-        // $jumlahPegawai = User::role('user')->count();
 
-        // dd($jumlahPegawai);
         $tanggal = $request->input('tanggal') ?: Carbon::now('Asia/Jakarta')->format('Y-m-d');
 
         $jumlahHadir = Kehadiran::whereDate('tanggal', $tanggal)
@@ -41,12 +39,17 @@ class UserController extends Controller
             ->whereDate('tanggal', $tanggal)
             ->exists();
 
+        $riwayatHariIni = Kehadiran::where('id_user', $userId)
+    ->whereDate('tanggal', $tanggal)
+    ->first(); // karena satu baris per hari
+
         return view('home', compact(
             'jumlahPegawai',
             'jumlahJabatan',
             'jumlahHadir',
             'jumlahCuti',
-            'absenHariIni'
+            'absenHariIni',
+            'riwayatHariIni'
         ));
     }
 

@@ -9,44 +9,77 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="card text-center border-0">
-                                <div class="card-body">
+                        <div class="col-md-4 d-flex">
+                            <div class="card text-center border-0 w-100 h-100">
+                                <div class="card-body d-flex flex-column justify-content-center">
                                     <img src="{{ asset($pegawai->cover) }}" alt="Foto Profil"
-                                        style="width: 120px; height: 120px; object-fit: cover;"
-                                        class="rounded-circle shadow mb-3">
+                                        style="width: 200px; height: 200px; object-fit: cover;"
+                                        class="rounded-circle shadow mb-4 mx-auto">
                                     <h5 class="card-title mb-0">{{ $pegawai->name }}</h5>
                                     <div class="text-muted">{{ $pegawai->email }}</div>
-                                    <div class="badge bg-primary mt-2 text-white">{{ $pegawai->jabatan->nama_jabatan }}</div>
+                                    <div class="mt-2">
+                                        <span class="badge bg-primary text-white text-wrap px-3">
+                                            {{ $pegawai->jabatan->nama_jabatan }}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-8">
-                            <div class="card">
+                        <div class="col-md-8 d-flex">
+                            <div class="card w-100 h-100">
                                 <div class="card-body">
                                     <ul class="list-group list-group-flush">
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <strong>NIP</strong><span>{{ $pegawai->nip }}</span>
+                                            <div class="d-flex align-items-center">
+                                                <i class="far fa-address-book text-primary" style="margin-right: 16px;"></i>
+                                                <strong class="fs-6">NIP</strong>
+                                            </div>
+                                            <span class="ms-2">{{ $pegawai->nip }}</span>
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <strong>Alamat</strong><span>{{ $pegawai->alamat }}</span>
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-map-marker-alt text-primary"
+                                                    style="margin-right: 16px;"></i>
+                                                <strong class="fs-6">Alamat</strong>
+                                            </div>
+                                            <span class="ms-2">{{ $pegawai->alamat }}</span>
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <strong>Tempat Lahir</strong><span>{{ $pegawai->tempat_lahir }}</span>
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-home text-primary" style="margin-right: 16px;"></i>
+                                                <strong class="fs-6">Tempat Lahir</strong>
+                                            </div>
+                                            <span class="ms-2">{{ $pegawai->tempat_lahir }}</span>
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <strong>Tanggal
-                                                Lahir</strong><span>{{ \Carbon\Carbon::parse($pegawai->tgl_lahir)->format('d-m-Y') }}</span>
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-calendar-alt text-primary" style="margin-right: 16px;"></i>
+                                                <strong class="fs-6">Tanggal Lahir</strong>
+                                            </div>
+                                            <span
+                                                class="ms-2">{{ \Carbon\Carbon::parse($pegawai->tgl_lahir)->format('d-m-Y') }}</span>
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <strong>Agama</strong><span>{{ $pegawai->agama }}</span>
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-moon text-primary" style="margin-right: 16px;"></i>
+                                                <strong class="fs-6">Agama</strong>
+                                            </div>
+                                            <span class="ms-2">{{ $pegawai->agama }}</span>
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <strong>Jenis Kelamin</strong><span>{{ $pegawai->jenis_kelamin }}</span>
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-mars-double text-primary" style="margin-right: 16px;"></i>
+                                                <strong class="fs-6">Jenis Kelamin</strong>
+                                            </div>
+                                            <span class="ms-2">{{ $pegawai->jenis_kelamin }}</span>
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <strong>No Telepon</strong><span>{{ $pegawai->no_telp }}</span>
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-phone text-primary" style="margin-right: 16px;"></i>
+                                                <strong class="fs-6">No Telepon</strong>
+                                            </div>
+                                            <span>{{ $pegawai->no_telp }}</span>
                                         </li>
                                     </ul>
                                     @role('admin')
@@ -95,8 +128,8 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="cover" class="text-dark">Foto</label>
-                                                    <input type="file" class="form-control" name="cover" id="cover"
-                                                        accept="image/*">
+                                                    <input type="file" class="form-control" name="cover"
+                                                        id="cover" accept="image/*">
 
                                                     @if (isset($pegawai) && $pegawai->cover)
                                                         <div class="mt-3">
@@ -123,7 +156,8 @@
                                                 <div class="form-group">
                                                     <label>Tempat Lahir</label>
                                                     <input type="text" class="form-control" name="tempat_lahir"
-                                                        value="{{ old('tempat_lahir', $pegawai->tempat_lahir) }}" required>
+                                                        value="{{ old('tempat_lahir', $pegawai->tempat_lahir) }}"
+                                                        required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Tanggal Lahir</label>

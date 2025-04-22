@@ -45,7 +45,8 @@
                                         </h6>
                                     </div>
                                     <div class="ml-auto mt-md-3 mt-lg-0">
-                                        <span class="opacity-7 text-muted"><i class="icon-briefcase" style="font-size: 20px; "></i></span>
+                                        <span class="opacity-7 text-muted"><i class="icon-briefcase"
+                                                style="font-size: 20px; "></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -61,7 +62,8 @@
                                             Ini</h6>
                                     </div>
                                     <div class="ml-auto mt-md-3 mt-lg-0">
-                                        <span class="opacity-7 text-muted"><i class="icon-book-open" style="font-size: 20px; "></i></span>
+                                        <span class="opacity-7 text-muted"><i class="icon-book-open"
+                                                style="font-size: 20px; "></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -75,7 +77,8 @@
                                         </h6>
                                     </div>
                                     <div class="ml-auto mt-md-3 mt-lg-0">
-                                        <span class="opacity-7 text-muted"><i class="icon-notebook" style="font-size: 20px; "></i></span>
+                                        <span class="opacity-7 text-muted"><i class="icon-notebook"
+                                                style="font-size: 20px; "></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -131,15 +134,6 @@
                     </div>
                 </div>
             </div>
-
-            {{-- <a class="carousel-control-prev" href="#userDashboardCarousel" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
-                <span class="sr-only">Sebelumnya</span>
-            </a>
-            <a class="carousel-control-next" href="#userDashboardCarousel" role="button" data-slide="next">
-                <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
-                <span class="sr-only">Selanjutnya</span>
-            </a> --}}
         </div>
 
         <div class="mt-4">
@@ -160,6 +154,69 @@
                 </div>
             @endif
         </div>
+
+        @if ($riwayatHariIni)
+            <div class="mt-4">
+                <div class="card shadow-sm border-left-primary">
+                    <div class="card-header">
+                        <h5 class="mb-0">Riwayat Absen Hari Ini</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            <i class="fas fa-calendar-check mr-1"></i>
+                            Tanggal: {{ \Carbon\Carbon::parse($riwayatHariIni->tanggal)->format('d M Y') }}
+                        </p>
+
+                        <p>
+                            <i class="fas fa-clock mr-1"></i>
+                            Jam Masuk: <strong>{{ $riwayatHariIni->jam_masuk ?? '-' }}</strong>
+                        </p>
+                        <p>
+                            <i class="fas fa-clock mr-1"></i>
+                            Jam Keluar: <strong>{{ $riwayatHariIni->jam_keluar ?? '-' }}</strong>
+                        </p>
+
+                        <p>
+                            <i class="fas fa-clock mr-1"></i>
+                            Total Jam Kerja: <strong>{{ $riwayatHariIni->jam_kerja ?? '-' }}</strong>
+                        </p>
+
+                        @if ($riwayatHariIni->status == 'Sakit')
+                            <p>
+                                <i class="fas fa-plus-square mr-1"></i>
+                                Status:
+                                <button class="btn btn-danger btn-sm rounded-pill" disabled>Sakit</button>
+                            </p>
+                        @elseif ($riwayatHariIni->status == 'Terlambat')
+                            <p>
+                                <i class="fas fa-user-times mr-1"></i>
+                                Status:
+                                <button class="btn btn-warning btn-sm rounded-pill" disabled>Terlambat</button>
+                            </p>
+                        @elseif ($riwayatHariIni->status == 'Hadir')
+                            <p>
+                                <i class="fas fa-check-square mr-1"></i>
+                                Status:
+                                <button class="btn btn-primary btn-sm rounded-pill" disabled>Hadir</button>
+                            </p>
+                        @else
+                            <p>
+                                <i class="fas fa-window-close mr-1"></i>
+                                Status:
+                                <button class="btn btn-secondary btn-sm rounded-pill" disabled>Tidak Ada
+                                    Keterangan</button>
+                            </p>
+                        @endif
+
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="mt-4 text-muted">
+                <i class="feather icon-info mr-1"></i> Belum ada riwayat absen hari ini.
+            </div>
+        @endif
+
     </div>
     @endif
 @endsection

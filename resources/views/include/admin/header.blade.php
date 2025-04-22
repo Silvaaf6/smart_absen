@@ -12,8 +12,8 @@
                 <a href="index.html">
                     <b class="logo-icon">
                         <!-- Dark Logo icon -->
-                        <img src="{{ asset('admin/assets/images/logoo.png') }}" alt="homepage" class="dark-logo"
-                            style="width: 70px;" />
+                        <img src="{{ asset('admin/assets/images/logo1.png') }}" alt="homepage" class="dark-logo"
+                            style="width: 200px;" />
                         <!-- Light Logo icon -->
                         {{-- <img src="{{ asset('admin/assets/images/logoo.png') }}" alt="homepage" class="light-logo"
                             style="width: 70px;" /> --}}
@@ -21,13 +21,13 @@
 
                     <!--End Logo icon -->
                     <!-- Logo text -->
-                    <span class="logo-text">
+                    {{-- <span class="logo-text"> --}}
                         <!-- dark Logo text -->
-                        <img src="{{ asset('admin/assets/images/icon2.png') }}" alt="homepage" class="dark-logo"
-                            style="width: 140px;" />
+                        {{-- <img src="{{ asset('admin/assets/images/icon2.png') }}" alt="homepage" class="dark-logo"
+                            style="width: 140px;" /> --}}
                         <!-- Light Logo text -->
                         {{-- <img src="{{ asset('admin/assets/images/icon2.png') }}" class="light-logo" alt="homepage" /> --}}
-                    </span>
+                    {{-- </span> --}}
                 </a>
             </div>
             <!-- ============================================================== -->
